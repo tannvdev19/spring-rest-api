@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres  # Replace with desired Postgres version
+    environment:
+      POSTGRES_PASSWORD: 123456  # Set your desired password
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data  # Persistent storage for data
+    ports:
+      - 5432:5432
+    restart: always
