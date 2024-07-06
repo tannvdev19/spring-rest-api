@@ -1,10 +1,11 @@
 package com.tannv.jobhunter.controller;
 
 import com.tannv.jobhunter.domain.User;
-import com.tannv.jobhunter.error.IdInvalidException;
+import com.tannv.jobhunter.util.error.IdInvalidException;
 import com.tannv.jobhunter.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,9 +14,11 @@ import java.util.List;
 @RequestMapping("users")
 public class UserController {
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping
@@ -35,6 +38,8 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
+        String hashPassword = this.passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashPassword);
         User createdUser =  this.userService.handleSave(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
