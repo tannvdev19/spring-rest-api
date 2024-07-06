@@ -1,6 +1,7 @@
 package com.tannv.jobhunter.controller;
 
 import com.tannv.jobhunter.domain.User;
+import com.tannv.jobhunter.error.IdInvalidException;
 import com.tannv.jobhunter.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,10 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable("id") Long id) {
+    public ResponseEntity<User> getUserById(@PathVariable("id") Long id) throws IdInvalidException {
+        if(id > 900) {
+            throw new IdInvalidException("Id invalid");
+        }
         User user = this.userService.getUserById(id);
         return ResponseEntity.ok(user);
     }
