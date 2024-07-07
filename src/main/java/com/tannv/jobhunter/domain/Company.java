@@ -1,7 +1,7 @@
 package com.tannv.jobhunter.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.tannv.jobhunter.util.SecurityUtil;
-import com.tannv.jobhunter.util.constant.GenderEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -10,30 +10,25 @@ import lombok.Setter;
 import java.time.Instant;
 
 @Entity
-@Table(name = "users")
+@Table(name = "companies")
 @Getter
 @Setter
-public class User {
+public class Company {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Email is required")
-    private String email;
-
+    @NotBlank(message = "Name is required")
     private String name;
 
-    @NotBlank(message = "Password is required")
-    private String password;
-
-    private int age;
-
-    @Enumerated(EnumType.STRING)
-    private GenderEnum gender;
+    @Lob
+    private String description;
 
     private String address;
-    private String refreshToken;
+    private String logo;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss a", timezone = "GMT+7")
     private Instant createdAt;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss a", timezone = "GMT+7")
     private Instant updatedAt;
     private String createdBy;
     private String updatedBy;

@@ -1,6 +1,7 @@
 package com.tannv.jobhunter.util;
 
 import com.tannv.jobhunter.domain.RestResponse;
+import com.tannv.jobhunter.util.anotation.ApiMessage;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.core.MethodParameter;
@@ -31,7 +32,8 @@ public class FormatRestResponse implements ResponseBodyAdvice<Object> {
             return body;
         } else {
             res.setData(body);
-            res.setMessage("Call API success");
+            ApiMessage message = returnType.getMethodAnnotation(ApiMessage.class);
+            res.setMessage(message != null ? message.value() : "CAL API SUCCESS");
         }
         return res;
     }

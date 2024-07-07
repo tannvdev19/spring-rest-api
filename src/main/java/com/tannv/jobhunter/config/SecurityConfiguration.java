@@ -40,11 +40,12 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authz -> authz.requestMatchers("/", "/auth/login").permitAll().anyRequest().authenticated())
+                .authorizeHttpRequests(authz -> authz.requestMatchers("/", "/api/v1/auth/login").permitAll().anyRequest().authenticated())
                 .formLogin(AbstractHttpConfigurer::disable)
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults())
                         .authenticationEntryPoint(customAuthenticationEntryPoint)
                 )
+                .cors(Customizer.withDefaults())
 //                .exceptionHandling(exceptions -> exceptions
 //                        .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
 //                        .accessDeniedHandler(new BearerTokenAccessDeniedHandler())

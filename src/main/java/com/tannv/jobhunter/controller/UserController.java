@@ -1,17 +1,23 @@
 package com.tannv.jobhunter.controller;
 
 import com.tannv.jobhunter.domain.User;
+import com.tannv.jobhunter.domain.dto.user.ResCreateUserDTO;
+import com.tannv.jobhunter.domain.dto.ResultPaginationDTO;
+import com.tannv.jobhunter.domain.dto.user.ResUpdateUserDTO;
+import com.tannv.jobhunter.domain.dto.user.ResUserDTO;
+import com.tannv.jobhunter.util.anotation.ApiMessage;
 import com.tannv.jobhunter.util.error.IdInvalidException;
 import com.tannv.jobhunter.service.UserService;
+import com.turkraft.springfilter.boot.Filter;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("users")
+@RequestMapping("/api/v1/users")
 public class UserController {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
@@ -22,36 +28,60 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = this.userService.getAllUsers();
-        return ResponseEntity.ok(users);
+    @ApiMessage("Fetch all users")
+    public ResponseEntity<ResultPaginationDTO> getAllUsers(
+            @Filter Specification<User> spec,
+            Pageable pageable) {
+        ResultPaginationDTO resultPaginationDTO = this.userService.getAllUsers(spec,pageable);
+        return ResponseEntity.ok(resultPaginationDTO);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable("id") Long id) throws IdInvalidException {
-        if(id > 900) {
-            throw new IdInvalidException("Id invalid");
+    @ApiMessage("Fetch user by id")
+    public ResponseEntity<ResUserDTO> getUserById(@PathVariable("id") Long id) throws IdInvalidException {
+        User currentUser = this.userService.getUserById(id);
+        if(currentUser == null) {
+            throw new IdInvalidException("User id =" + id + " is not existed");
         }
         User user = this.userService.getUserById(id);
-        return ResponseEntity.ok(user);
+        ResUserDTO resUserDTO = this.userService.convertResUserDTO(user);
+        return ResponseEntity.ok(resUserDTO);
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    @ApiMessage("Create user")
+    public ResponseEntity<ResCreateUserDTO> createUser(@RequestBody User user) throws IdInvalidException {
+        boolean isEmailExist = this.userService.isEmailExist(user.getEmail());
+        if(isEmailExist) {
+            throw new IdInvalidException("Email" + user.getEmail() + "is existed, please use another email instead");
+        }
+
         String hashPassword = this.passwordEncoder.encode(user.getPassword());
         user.setPassword(hashPassword);
         User createdUser =  this.userService.handleSave(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
+        ResCreateUserDTO resUser = this.userService.convertCreateUserDTO(createdUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(resUser);
     }
 
     @PutMapping
-    public ResponseEntity<User> updateUser(@RequestBody User user) {
+    @ApiMessage("Update user")
+    public ResponseEntity<ResUpdateUserDTO> updateUser(@RequestBody User user) throws IdInvalidException {
+        User currentUser = this.userService.getUserById(user.getId());
+        if(currentUser == null) {
+            throw new IdInvalidException("User id =" + user.getId() + " is not existed");
+        }
         User updatedUser = this.userService.handleUpdate(user);
-        return ResponseEntity.ok(updatedUser);
+        ResUpdateUserDTO resUpdateUserDTO = this.userService.convertResUpdateUserDTO(updatedUser);
+        return ResponseEntity.ok(resUpdateUserDTO);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+    @ApiMessage("Delete user")
+    public ResponseEntity<String> deleteUser(@PathVariable Long id) throws IdInvalidException {
+        User currentUser = this.userService.getUserById(id);
+        if(currentUser == null) {
+            throw new IdInvalidException("User id =" + id + " is not existed");
+        }
         this.userService.deleteUser(id);
         return ResponseEntity.ok("Success");
     }
