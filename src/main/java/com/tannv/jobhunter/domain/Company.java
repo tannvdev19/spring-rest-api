@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.Length;
 
 import java.time.Instant;
 
@@ -21,7 +22,7 @@ public class Company {
     @NotBlank(message = "Name is required")
     private String name;
 
-    @Lob
+    @Column(length = Length.LONG)
     private String description;
 
     private String address;

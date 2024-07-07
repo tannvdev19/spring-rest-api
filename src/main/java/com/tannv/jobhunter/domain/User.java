@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.Length;
 
 import java.time.Instant;
 
@@ -32,7 +33,10 @@ public class User {
     private GenderEnum gender;
 
     private String address;
+
+    @Column(length = Length.LONG)
     private String refreshToken;
+
     private Instant createdAt;
     private Instant updatedAt;
     private String createdBy;
