@@ -3,6 +3,7 @@ package com.tannv.jobhunter.controller;
 import com.tannv.jobhunter.domain.Company;
 import com.tannv.jobhunter.domain.response.ResultPaginationDTO;
 import com.tannv.jobhunter.service.CompanyService;
+import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -21,7 +22,7 @@ public class CompanyController {
 
     @GetMapping
     public ResponseEntity<ResultPaginationDTO> getCompany(
-            Specification<Company> spec,
+            @Filter Specification<Company> spec,
             Pageable pageable
     ) {
         ResultPaginationDTO companies = this.companyService.handleGet(spec, pageable);

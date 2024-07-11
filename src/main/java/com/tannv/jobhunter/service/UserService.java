@@ -1,10 +1,12 @@
 package com.tannv.jobhunter.service;
 
+import com.tannv.jobhunter.domain.Company;
 import com.tannv.jobhunter.domain.User;
 import com.tannv.jobhunter.domain.response.ResCreateUserDTO;
 import com.tannv.jobhunter.domain.response.ResultPaginationDTO;
 import com.tannv.jobhunter.domain.response.ResUpdateUserDTO;
 import com.tannv.jobhunter.domain.response.ResUserDTO;
+import com.tannv.jobhunter.repository.CompanyRepository;
 import com.tannv.jobhunter.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,12 +20,19 @@ import java.util.Optional;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final CompanyRepository companyRepository;
 
-    public UserService(UserRepository userRepository) {
+
+    public UserService(UserRepository userRepository, CompanyRepository companyRepository) {
         this.userRepository = userRepository;
+        this.companyRepository = companyRepository;
     }
 
     public User handleSave(User user) {
+        if(user.getCompany() != null) {
+            Optional<Company> companyOptional = this.companyRepository.findById(user.getCompany().getId());
+            user.setCompany(companyOptional.orElse(null));
+        }
         return this.userRepository.save(user);
     }
 
@@ -33,6 +42,12 @@ public class UserService {
             dbUser.setEmail(reqUser.getEmail());
             dbUser.setName(reqUser.getName());
             dbUser.setPassword(reqUser.getPassword());
+
+            // Verify company
+            if(reqUser.getCompany() != null) {
+                Optional<Company> companyOptional = this.companyRepository.findById(reqUser.getId());
+                dbUser.setCompany(companyOptional.orElse(null));
+            }
 
             dbUser = this.userRepository.save(dbUser);
         }
@@ -59,6 +74,7 @@ public class UserService {
 
         List<ResUserDTO> listUser = pageUser.getContent().stream().map(item -> {
             ResUserDTO userDto = new ResUserDTO();
+            ResUserDTO.CompanyUser companyUser = new ResUserDTO.CompanyUser();
             userDto.setId(item.getId());
             userDto.setEmail(item.getEmail());
             userDto.setName(item.getName());
@@ -67,6 +83,11 @@ public class UserService {
             userDto.setAge(item.getAge());
             userDto.setUpdatedAt(item.getUpdatedAt());
             userDto.setCreatedAt(item.getCreatedAt());
+            if(item.getCompany() != null) {
+                companyUser.setId(item.getCompany().getId());
+                companyUser.setName(item.getCompany().getName());
+                userDto.setCompany(companyUser);
+            }
             return userDto;
         }).toList();
 
@@ -88,6 +109,7 @@ public class UserService {
 
     public ResCreateUserDTO convertCreateUserDTO(User user) {
         ResCreateUserDTO resCreateUserDTO = new ResCreateUserDTO();
+        ResCreateUserDTO.CompanyUser companyUser = new ResCreateUserDTO.CompanyUser();
         resCreateUserDTO.setId(user.getId());
         resCreateUserDTO.setName(user.getName());
         resCreateUserDTO.setEmail(user.getEmail());
@@ -95,11 +117,18 @@ public class UserService {
         resCreateUserDTO.setAddress(user.getAddress());
         resCreateUserDTO.setAge(user.getAge());
         resCreateUserDTO.setCreatedAt(user.getCreatedAt());
+
+        if(user.getCompany() != null) {
+            companyUser.setId(user.getCompany().getId());
+            companyUser.setName(user.getCompany().getName());
+            resCreateUserDTO.setCompany(companyUser);
+        }
         return resCreateUserDTO;
     }
 
     public ResUserDTO convertResUserDTO(User user) {
         ResUserDTO resUserDTO = new ResUserDTO();
+        ResUserDTO.CompanyUser companyUser = new ResUserDTO.CompanyUser();
         resUserDTO.setId(user.getId());
         resUserDTO.setName(user.getName());
         resUserDTO.setEmail(user.getEmail());
@@ -108,17 +137,29 @@ public class UserService {
         resUserDTO.setAge(user.getAge());
         resUserDTO.setCreatedAt(user.getCreatedAt());
         resUserDTO.setUpdatedAt(user.getUpdatedAt());
+
+        if(user.getCompany() != null) {
+            companyUser.setId(user.getCompany().getId());
+            companyUser.setName(user.getCompany().getName());
+            resUserDTO.setCompany(companyUser);
+        }
         return resUserDTO;
     }
 
     public ResUpdateUserDTO convertResUpdateUserDTO(User user) {
         ResUpdateUserDTO resUpdateUserDTO = new ResUpdateUserDTO();
+        ResUpdateUserDTO.CompanyUser companyUser = new ResUpdateUserDTO.CompanyUser();
         resUpdateUserDTO.setId(user.getId());
         resUpdateUserDTO.setName(user.getName());
         resUpdateUserDTO.setGender(user.getGender());
         resUpdateUserDTO.setAddress(user.getAddress());
         resUpdateUserDTO.setAge(user.getAge());
         resUpdateUserDTO.setUpdatedAt(user.getUpdatedAt());
+        if(user.getCompany() != null) {
+            companyUser.setId(user.getCompany().getId());
+            companyUser.setName(user.getCompany().getName());
+            resUpdateUserDTO.setCompany(companyUser);
+        }
         return resUpdateUserDTO;
     }
 
