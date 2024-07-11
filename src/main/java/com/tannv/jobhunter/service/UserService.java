@@ -2,10 +2,10 @@ package com.tannv.jobhunter.service;
 
 import com.tannv.jobhunter.domain.Company;
 import com.tannv.jobhunter.domain.User;
-import com.tannv.jobhunter.domain.response.ResCreateUserDTO;
+import com.tannv.jobhunter.domain.response.user.ResCreateUserDTO;
 import com.tannv.jobhunter.domain.response.ResultPaginationDTO;
-import com.tannv.jobhunter.domain.response.ResUpdateUserDTO;
-import com.tannv.jobhunter.domain.response.ResUserDTO;
+import com.tannv.jobhunter.domain.response.user.ResUpdateUserDTO;
+import com.tannv.jobhunter.domain.response.user.ResUserDTO;
 import com.tannv.jobhunter.repository.CompanyRepository;
 import com.tannv.jobhunter.repository.UserRepository;
 import org.springframework.data.domain.Page;

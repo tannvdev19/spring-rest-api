@@ -1,4 +1,4 @@
-package com.tannv.jobhunter.domain.response;
+package com.tannv.jobhunter.domain.response.user;
 
 import com.tannv.jobhunter.util.constant.GenderEnum;
 import lombok.Getter;
@@ -8,16 +8,14 @@ import java.time.Instant;
 
 @Getter
 @Setter
-public class ResCreateUserDTO {
+public class ResUpdateUserDTO {
     private Long id;
     private String name;
-    private String email;
     private GenderEnum gender;
     private String address;
     private int age;
-    private Instant createdAt;
+    private Instant updatedAt;
     private CompanyUser company;
-
     @Getter
     @Setter
     public static class CompanyUser {

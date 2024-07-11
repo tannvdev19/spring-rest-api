@@ -16,7 +16,7 @@ import java.util.List;
 @Table(name = "companies")
 @Getter
 @Setter
-public class Company extends BaseEntity{
+public class Company{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,6 +30,11 @@ public class Company extends BaseEntity{
     private String address;
     private String logo;
 
+    private Instant createdAt;
+    private String createdBy;
+    private Instant updatedAt;
+    private String updatedBy;
+
     @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
     @JsonIgnore
     List<User> users;
@@ -37,4 +42,16 @@ public class Company extends BaseEntity{
     @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
     @JsonIgnore
     List<Job> jobs;
+
+    @PrePersist
+    public void handleCreatedAt() {
+        this.setCreatedBy(SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "");
+        this.setCreatedAt(Instant.now());
+    }
+
+    @PreUpdate
+    public void handleBeforeUpdate() {
+        this.setUpdatedBy(SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "");
+        this.setUpdatedAt(Instant.now());
+    }
 }

@@ -14,7 +14,7 @@ import java.time.Instant;
 @Table(name = "users")
 @Getter
 @Setter
-public class User extends BaseEntity {
+public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -37,7 +37,24 @@ public class User extends BaseEntity {
     @Column(length = Length.LONG)
     private String refreshToken;
 
+    private Instant createdAt;
+    private String createdBy;
+    private Instant updatedAt;
+    private String updatedBy;
+
     @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;
+
+    @PrePersist
+    public void handleCreatedAt() {
+        this.setCreatedBy(SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "");
+        this.setCreatedAt(Instant.now());
+    }
+
+    @PreUpdate
+    public void handleBeforeUpdate() {
+        this.setUpdatedBy(SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "");
+        this.setUpdatedAt(Instant.now());
+    }
 }
