@@ -1,11 +1,10 @@
 package com.tannv.jobhunter.service;
 
 import com.tannv.jobhunter.domain.User;
-import com.tannv.jobhunter.domain.dto.Meta;
-import com.tannv.jobhunter.domain.dto.user.ResCreateUserDTO;
-import com.tannv.jobhunter.domain.dto.ResultPaginationDTO;
-import com.tannv.jobhunter.domain.dto.user.ResUpdateUserDTO;
-import com.tannv.jobhunter.domain.dto.user.ResUserDTO;
+import com.tannv.jobhunter.domain.response.ResCreateUserDTO;
+import com.tannv.jobhunter.domain.response.ResultPaginationDTO;
+import com.tannv.jobhunter.domain.response.ResUpdateUserDTO;
+import com.tannv.jobhunter.domain.response.ResUserDTO;
 import com.tannv.jobhunter.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -49,7 +47,7 @@ public class UserService {
     public ResultPaginationDTO getAllUsers(Specification<User> spec, Pageable pageable) {
         Page<User> pageUser = this.userRepository.findAll(spec, pageable);
         ResultPaginationDTO rs = new ResultPaginationDTO();
-        Meta mt = new Meta();
+        ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
 
         mt.setPage(pageable.getPageNumber() + 1);
         mt.setPageSize(pageUser.getSize());

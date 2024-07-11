@@ -1,10 +1,10 @@
 package com.tannv.jobhunter.controller;
 
 import com.tannv.jobhunter.domain.User;
-import com.tannv.jobhunter.domain.dto.user.ResCreateUserDTO;
-import com.tannv.jobhunter.domain.dto.ResultPaginationDTO;
-import com.tannv.jobhunter.domain.dto.user.ResUpdateUserDTO;
-import com.tannv.jobhunter.domain.dto.user.ResUserDTO;
+import com.tannv.jobhunter.domain.response.ResCreateUserDTO;
+import com.tannv.jobhunter.domain.response.ResultPaginationDTO;
+import com.tannv.jobhunter.domain.response.ResUpdateUserDTO;
+import com.tannv.jobhunter.domain.response.ResUserDTO;
 import com.tannv.jobhunter.util.anotation.ApiMessage;
 import com.tannv.jobhunter.util.error.IdInvalidException;
 import com.tannv.jobhunter.service.UserService;

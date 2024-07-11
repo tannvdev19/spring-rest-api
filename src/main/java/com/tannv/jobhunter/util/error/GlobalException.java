@@ -1,6 +1,6 @@
 package com.tannv.jobhunter.util.error;
 
-import com.tannv.jobhunter.domain.RestResponse;
+import com.tannv.jobhunter.domain.response.RestResponse;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

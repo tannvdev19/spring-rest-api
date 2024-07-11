@@ -1,4 +1,4 @@
-package com.tannv.jobhunter.domain.dto.user;
+package com.tannv.jobhunter.domain.response;
 
 import com.tannv.jobhunter.util.constant.GenderEnum;
 import lombok.AllArgsConstructor;

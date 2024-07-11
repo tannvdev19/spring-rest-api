@@ -1,8 +1,8 @@
 package com.tannv.jobhunter.controller;
 
 import com.tannv.jobhunter.domain.User;
-import com.tannv.jobhunter.domain.dto.LoginDTO;
-import com.tannv.jobhunter.domain.dto.ResLoginDTO;
+import com.tannv.jobhunter.domain.request.ReqLoginDTO;
+import com.tannv.jobhunter.domain.response.ResLoginDTO;
 import com.tannv.jobhunter.service.UserService;
 import com.tannv.jobhunter.util.SecurityUtil;
 import com.tannv.jobhunter.util.anotation.ApiMessage;
@@ -33,22 +33,22 @@ public class AuthController {
 
     @PostMapping("/login")
     @ApiMessage("Login")
-    public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody LoginDTO loginDto) {
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword());
+    public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody ReqLoginDTO reqLoginDto) {
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(reqLoginDto.getUsername(), reqLoginDto.getPassword());
         Authentication authentication = this.authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         ResLoginDTO res = new ResLoginDTO();
-        User currentUserDb = this.userService.handleGetUserByUsername(loginDto.getUsername());
+        User currentUserDb = this.userService.handleGetUserByUsername(reqLoginDto.getUsername());
         if(currentUserDb != null) {
             ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(currentUserDb.getId(), currentUserDb.getEmail(), currentUserDb.getName());
             res.setUser(userLogin);
         }
-        String accessToken = this.securityUtil.createAccessToken(loginDto.getUsername(), res.getUser());
+        String accessToken = this.securityUtil.createAccessToken(reqLoginDto.getUsername(), res.getUser());
         res.setAccessToken(accessToken);
-        String refreshToken = this.securityUtil.createRefreshToken(loginDto.getUsername(), res);
-        this.userService.updateUserToken(refreshToken, loginDto.getUsername());
+        String refreshToken = this.securityUtil.createRefreshToken(reqLoginDto.getUsername(), res);
+        this.userService.updateUserToken(refreshToken, reqLoginDto.getUsername());
         ResponseCookie responseCookie = ResponseCookie.from("refresh_token", refreshToken)
                 .httpOnly(true)
                 .path("/")

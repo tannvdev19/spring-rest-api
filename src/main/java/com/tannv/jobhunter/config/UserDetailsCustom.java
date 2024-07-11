@@ -1,5 +1,6 @@
-package com.tannv.jobhunter.service;
+package com.tannv.jobhunter.config;
 
+import com.tannv.jobhunter.service.UserService;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,4 +1,4 @@
-package com.tannv.jobhunter.domain;
+package com.tannv.jobhunter.domain.response;
 
 public class RestResponse <T>{
     private int statusCode;

@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.nimbusds.jose.util.Base64;
-import com.tannv.jobhunter.domain.dto.ResLoginDTO;
+import com.tannv.jobhunter.domain.response.ResLoginDTO;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;

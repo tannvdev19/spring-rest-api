@@ -1,9 +1,7 @@
 package com.tannv.jobhunter.service;
 
 import com.tannv.jobhunter.domain.Company;
-import com.tannv.jobhunter.domain.User;
-import com.tannv.jobhunter.domain.dto.Meta;
-import com.tannv.jobhunter.domain.dto.ResultPaginationDTO;
+import com.tannv.jobhunter.domain.response.ResultPaginationDTO;
 import com.tannv.jobhunter.repository.CompanyRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,7 +38,7 @@ public class CompanyService {
     public ResultPaginationDTO handleGet(Specification<Company> spec, Pageable pageable) {
         Page<Company> pageUser = this.companyRepository.findAll(spec, pageable);
         ResultPaginationDTO rs = new ResultPaginationDTO();
-        Meta mt = new Meta();
+        ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
 
         mt.setPage(pageable.getPageNumber() + 1);
         mt.setPageSize(pageUser.getSize());

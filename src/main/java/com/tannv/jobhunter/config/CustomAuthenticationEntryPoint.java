@@ -1,7 +1,7 @@
 package com.tannv.jobhunter.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tannv.jobhunter.domain.RestResponse;
+import com.tannv.jobhunter.domain.response.RestResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

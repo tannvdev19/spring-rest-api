@@ -1,8 +1,7 @@
 package com.tannv.jobhunter.util;
 
-import com.tannv.jobhunter.domain.RestResponse;
+import com.tannv.jobhunter.domain.response.RestResponse;
 import com.tannv.jobhunter.util.anotation.ApiMessage;
-import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
