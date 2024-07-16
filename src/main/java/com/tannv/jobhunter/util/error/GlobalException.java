@@ -52,4 +52,13 @@ public class GlobalException {
         res.setMessage("404 Not found. URL may not exist");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
     }
+
+    @ExceptionHandler(value = StorageException.class)
+    public ResponseEntity<RestResponse<Object>> validationFileUpload(StorageException exception) {
+        RestResponse<Object> res = new RestResponse<Object>();
+        res.setStatusCode(HttpStatus.NOT_FOUND.value());
+        res.setError(exception.getMessage());
+        res.setMessage("Exception upload file...");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
+    }
 }
