@@ -5,26 +5,36 @@ import com.tannv.jobhunter.domain.response.user.ResCreateUserDTO;
 import com.tannv.jobhunter.domain.response.ResultPaginationDTO;
 import com.tannv.jobhunter.domain.response.user.ResUpdateUserDTO;
 import com.tannv.jobhunter.domain.response.user.ResUserDTO;
+import com.tannv.jobhunter.service.ExcelService;
 import com.tannv.jobhunter.util.anotation.ApiMessage;
 import com.tannv.jobhunter.util.error.IdInvalidException;
 import com.tannv.jobhunter.service.UserService;
 import com.turkraft.springfilter.boot.Filter;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1/users")
 public class UserController {
     private final UserService userService;
+    private final ExcelService excelService;
     private final PasswordEncoder passwordEncoder;
 
-    public UserController(UserService userService, PasswordEncoder passwordEncoder) {
+    public UserController(UserService userService, PasswordEncoder passwordEncoder, ExcelService excelService) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
+        this.excelService = excelService;
     }
 
     @GetMapping
@@ -85,4 +95,16 @@ public class UserController {
         this.userService.deleteUser(id);
         return ResponseEntity.ok("Success");
     }
+
+    @GetMapping("/excel")
+    @ApiMessage("Export excel")
+    public ResponseEntity<Resource> download() throws IOException {
+        String fileName = "users.xlsx";
+        ByteArrayInputStream actualData = excelService.getActualData();
+        InputStreamResource file = new InputStreamResource(actualData);
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName)
+                .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
+                .body(file);
+    }
+
 }
