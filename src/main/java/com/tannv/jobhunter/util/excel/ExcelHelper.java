@@ -32,6 +32,7 @@ public class ExcelHelper {
             int rowIndex = 1;
             for (User user : users) {
                 Row dataRow = sheet.createRow(rowIndex);
+
                 rowIndex++;
 
                 dataRow.createCell(0).setCellValue(user.getId());

@@ -10,6 +10,7 @@ import java.util.Map;
 @Setter
 public class ProjectBOM {
     private String product;
+    private String productFullParent;
     private Map<String, String> attributes;
     private List<ProjectBOM> childrens;
 }
