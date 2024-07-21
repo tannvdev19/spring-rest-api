@@ -5,7 +5,6 @@ import com.tannv.jobhunter.domain.response.user.ResCreateUserDTO;
 import com.tannv.jobhunter.domain.response.ResultPaginationDTO;
 import com.tannv.jobhunter.domain.response.user.ResUpdateUserDTO;
 import com.tannv.jobhunter.domain.response.user.ResUserDTO;
-import com.tannv.jobhunter.service.CsvService;
 import com.tannv.jobhunter.service.ExcelService;
 import com.tannv.jobhunter.util.anotation.ApiMessage;
 import com.tannv.jobhunter.util.error.IdInvalidException;
@@ -30,15 +29,13 @@ import java.io.IOException;
 public class UserController {
     private final UserService userService;
     private final ExcelService excelService;
-    private final CsvService csvService;
     private final PasswordEncoder passwordEncoder;
 
     public UserController(UserService userService, PasswordEncoder passwordEncoder,
-                          ExcelService excelService, CsvService csvService) {
+                          ExcelService excelService) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
         this.excelService = excelService;
-        this.csvService = csvService;
     }
 
     @GetMapping

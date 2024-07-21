@@ -1,35 +1,39 @@
 package com.tannv.jobhunter.controller;
 
-import com.tannv.jobhunter.model.ProjectBOM;
-import com.tannv.jobhunter.service.CsvService;
-import com.tannv.jobhunter.service.XMLService;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.tannv.jobhunter.service.ToolCompareInputService;
+import com.tannv.jobhunter.service.ToolCompareOutputService;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1/compare")
 public class CompareController {
-    private final XMLService xmlService;
-    private final CsvService csvService;
+    private final ToolCompareInputService toolCompareService;
+    private final ToolCompareOutputService toolCompareOutputService;
 
-
-    public CompareController(XMLService xmlService, CsvService csvService) {
-        this.xmlService = xmlService;
-        this.csvService = csvService;
+    public CompareController(ToolCompareInputService toolCompareService, ToolCompareOutputService toolCompareOutputService) {
+        this.toolCompareService = toolCompareService;
+        this.toolCompareOutputService = toolCompareOutputService;
     }
 
-    @GetMapping
-    public boolean readFile() {
-        return xmlService.readFile();
+    @PostMapping("/input")
+    public Object compareTechnicalCar(
+            @RequestParam(name = "legacyFile") MultipartFile legacyReq,
+            @RequestParam(name = "nxgFile")MultipartFile nxgReq)
+            throws IOException, ParserConfigurationException, SAXException {
+        return toolCompareService.compareTechnicalCar(legacyReq, nxgReq);
     }
 
-    @PostMapping("/csv")
-    public void testCsv() {
-        csvService.readFile();
+    @PostMapping("/output")
+    public Object compareBomCsv(
+            @RequestParam(name = "legacyFile") MultipartFile legacyReq,
+            @RequestParam(name = "nxgFile")MultipartFile nxgReq)
+            throws IOException, ParserConfigurationException, SAXException {
+        return toolCompareOutputService.compareBomCsvModel(legacyReq, nxgReq);
     }
-
 
 }
