@@ -19,9 +19,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.time.Instant;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class ToolCompareOutputService {
@@ -100,6 +98,7 @@ public class ToolCompareOutputService {
             printBOMCsvModel(child, indent + 2);
         }
     }
+
 
     public List<BOMCsvCompare> compareBOMCsvModels(BOMCsvModel legacyModel, BOMCsvModel nxgModel) {
         List<BOMCsvCompare> differences = new ArrayList<>();
@@ -185,6 +184,7 @@ public class ToolCompareOutputService {
     private byte[] dataToExcel(List<BOMCsvCompare> compareLines) throws IOException {
         final String SHEET_NAME = "Compare Inputs";
         final String SHEET_NAME_ERROR = "Error Inputs";
+        compareLines = compareLines.stream().map(BOMCsvCompare::getNewObjectWidthLevel).toList();
         try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             // Sheet compare inputs
             Sheet sheet = createDefaultSheetColumn(workbook, SHEET_NAME);
@@ -317,7 +317,14 @@ public class ToolCompareOutputService {
 
         Sheet sheet = workbook.createSheet(sheetName);
         for (int i = 0; i < 50; i++) {
-            sheet.setColumnWidth(i, defaultWidth);
+            if(i == 0) {
+                sheet.setColumnWidth(i, defaultWidth / 2);
+            } else if (i == 5|| i == 6) {
+                sheet.setColumnWidth(i, (defaultWidth * 2)/3);
+            }
+            else {
+                sheet.setColumnWidth(i, defaultWidth);
+            }
         }
 
         Row row = sheet.createRow(0);

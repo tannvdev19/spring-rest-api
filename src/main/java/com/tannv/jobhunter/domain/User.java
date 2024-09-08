@@ -11,7 +11,7 @@ import org.hibernate.Length;
 import java.time.Instant;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users", schema = "jobhunter")
 @Getter
 @Setter
 public class User{

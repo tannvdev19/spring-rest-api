@@ -5,6 +5,7 @@ import com.tannv.jobhunter.domain.response.user.ResCreateUserDTO;
 import com.tannv.jobhunter.domain.response.ResultPaginationDTO;
 import com.tannv.jobhunter.domain.response.user.ResUpdateUserDTO;
 import com.tannv.jobhunter.domain.response.user.ResUserDTO;
+import com.tannv.jobhunter.model.UserModel;
 import com.tannv.jobhunter.service.ExcelService;
 import com.tannv.jobhunter.util.anotation.ApiMessage;
 import com.tannv.jobhunter.util.error.IdInvalidException;
@@ -56,8 +57,10 @@ public class UserController {
         }
         User user = this.userService.getUserById(id);
         ResUserDTO resUserDTO = this.userService.convertResUserDTO(user);
+        User userModel = this.userService.getUserByIdV2(id);
         return ResponseEntity.ok(resUserDTO);
     }
+
 
     @PostMapping
     @ApiMessage("Create user")

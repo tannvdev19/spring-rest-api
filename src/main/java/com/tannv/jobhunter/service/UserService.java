@@ -6,6 +6,7 @@ import com.tannv.jobhunter.domain.response.user.ResCreateUserDTO;
 import com.tannv.jobhunter.domain.response.ResultPaginationDTO;
 import com.tannv.jobhunter.domain.response.user.ResUpdateUserDTO;
 import com.tannv.jobhunter.domain.response.user.ResUserDTO;
+import com.tannv.jobhunter.model.UserModel;
 import com.tannv.jobhunter.repository.CompanyRepository;
 import com.tannv.jobhunter.repository.UserRepository;
 import org.springframework.data.domain.Page;
@@ -173,5 +174,9 @@ public class UserService {
 
     public User getUserByRefreshTokenAndEmail(String token, String email) {
         return this.userRepository.findByRefreshTokenAndEmail(token, email);
+    }
+
+    public User getUserByIdV2(Long userId) {
+        return  this.userRepository.getUserById(userId);
     }
 }

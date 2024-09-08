@@ -77,7 +77,7 @@ public class ToolCompareUtils {
 
         if (legacy != null && nxg != null) {
             CompareInputLineModel inputLineHeader = new CompareInputLineModel(
-                    legacy.getProduct(), legacy.getProductFullParent(), legacy.getSerialNo(),
+                    legacy.getProduct(), legacy.getProductFullParent(), "", "",
                     "", "", "" ,""
             );
             inputs.add(inputLineHeader);
@@ -92,7 +92,8 @@ public class ToolCompareUtils {
                 CompareInputLineModel inputLine = new CompareInputLineModel();
                 inputLine.setProduct(legacy.getProduct());
                 inputLine.setProductFullParent(legacy.getProductFullParent());
-                inputLine.setSerialNo(legacy.getSerialNo());
+                inputLine.setLegacySerialNo(legacy.getSerialNo());
+                inputLine.setNxgSerialNo(nxg.getSerialNo());
                 inputLine.setLegacyInputName(key);
                 inputLine.setLegacyInputValue(legacyValue);
                 if(nxgValue == null) {
@@ -111,7 +112,8 @@ public class ToolCompareUtils {
                     CompareInputLineModel inputLine = new CompareInputLineModel();
                     inputLine.setProduct(nxg.getProduct());
                     inputLine.setProductFullParent(nxg.getProductFullParent());
-                    inputLine.setSerialNo(nxg.getSerialNo());
+                    inputLine.setLegacySerialNo(legacy.getSerialNo());
+                    inputLine.setNxgSerialNo(nxg.getSerialNo());
                     inputLine.setLegacyInputName("");
                     inputLine.setLegacyInputValue("");
                     inputLine.setNxgInputName(key);
@@ -132,20 +134,16 @@ public class ToolCompareUtils {
             }
         } else if (legacy != null) {
             CompareInputLineModel inputLineHeaderLegacy = new CompareInputLineModel(
-                    legacy.getProduct(), legacy.getProductFullParent(), legacy.getSerialNo(),
+                    legacy.getProduct(), legacy.getProductFullParent(), "", "",
                     "", "", "", ""
             );
             inputs.add(inputLineHeaderLegacy);
 
             for (Map.Entry<String, String> entry : legacy.getAttributes().entrySet()) {
-                CompareInputLineModel inputLineLegacy = new CompareInputLineModel();
-                inputLineLegacy.setProduct(legacy.getProduct());
-                inputLineLegacy.setProductFullParent(legacy.getProductFullParent());
-                inputLineLegacy.setSerialNo(legacy.getSerialNo());
-                inputLineLegacy.setLegacyInputName(entry.getKey());
-                inputLineLegacy.setLegacyInputValue(entry.getValue());
-                inputLineLegacy.setNxgInputName("");
-                inputLineLegacy.setNxgInputValue("");
+                CompareInputLineModel inputLineLegacy = new CompareInputLineModel(
+                        legacy.getProduct(), legacy.getProductFullParent(), legacy.getSerialNo(), "",
+                        entry.getKey(), entry.getValue(), "", ""
+                );
                 inputs.add(inputLineLegacy);
             }
 
@@ -153,21 +151,17 @@ public class ToolCompareUtils {
                 compareTechnicalCars(child, null, inputs);
             }
         } else {
-            CompareInputLineModel inputLineHeaderNxg = new CompareInputLineModel();
-            inputLineHeaderNxg.setProduct(nxg.getProduct());
-            inputLineHeaderNxg.setProductFullParent(nxg.getProductFullParent());
-            inputLineHeaderNxg.setSerialNo(nxg.getSerialNo());
+            CompareInputLineModel inputLineHeaderNxg = new CompareInputLineModel(
+                    nxg.getProduct(), nxg.getProductFullParent(), "", "", "", "", "", ""
+            );
             inputs.add(inputLineHeaderNxg);
 
             for (Map.Entry<String, String> entry : nxg.getAttributes().entrySet()) {
-                CompareInputLineModel inputLineNxg = new CompareInputLineModel();
-                inputLineNxg.setProduct(nxg.getProduct());
-                inputLineNxg.setProductFullParent(nxg.getProductFullParent());
-                inputLineNxg.setSerialNo(nxg.getSerialNo());
-                inputLineNxg.setLegacyInputName("");
-                inputLineNxg.setLegacyInputValue("");
-                inputLineNxg.setNxgInputName(entry.getKey());
-                inputLineNxg.setNxgInputValue(entry.getValue());
+                CompareInputLineModel inputLineNxg = new CompareInputLineModel(
+                        nxg.getProduct(), nxg.getProductFullParent(), "", nxg.getSerialNo(),
+                        "", "", entry.getKey(), entry.getValue()
+                );
+                CompareInputLineModel inputLineNxg2 = new CompareInputLineModel();
                 inputs.add(inputLineNxg);
             }
 
@@ -176,4 +170,5 @@ public class ToolCompareUtils {
             }
         }
     }
+
 }

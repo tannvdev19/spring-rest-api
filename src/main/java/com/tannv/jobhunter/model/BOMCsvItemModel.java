@@ -1,5 +1,6 @@
 package com.tannv.jobhunter.model;
 
+import com.tannv.jobhunter.util.excel.StringUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -50,6 +51,32 @@ public class BOMCsvItemModel {
         this.bBlock = rowData.get(15);
         this.bBType = rowData.get(16);
         this.smartPart = rowData.get(17);
+    }
+
+    public BOMCsvItemModel getNewObjectWithLevel() {
+        BOMCsvItemModel model = new BOMCsvItemModel();
+        int currentLevel = Integer.parseInt(getLevel()) * 4;
+
+        model.setLevel(StringUtils.indentationString(currentLevel, this.getLevel()));
+        model.setItem(StringUtils.indentationString(currentLevel, this.getItem()));
+        model.setDescription(StringUtils.indentationString(currentLevel, this.getDescription()));
+        model.setQty(StringUtils.indentationString(currentLevel, this.getQty()));
+        model.setPackingDOKAR(StringUtils.indentationString(currentLevel, this.getPackingDOKAR()));
+        model.setPackingDOKNR(StringUtils.indentationString(currentLevel, this.getPackingDOKNR()));
+        model.setLabelDOKAR(StringUtils.indentationString(currentLevel, this.getLabelDOKAR()));
+        model.setLabelDOKNR(StringUtils.indentationString(currentLevel, this.getLabelDOKNR()));
+        model.setDrawId(StringUtils.indentationString(currentLevel, this.getDrawId()));
+        model.setGenericItem(StringUtils.indentationString(currentLevel, this.getGenericItem()));
+        model.setFQty(StringUtils.indentationString(currentLevel, this.getFQty()));
+        model.setBom2(StringUtils.indentationString(currentLevel, this.getBom2()));
+        model.setSapMaterialId(StringUtils.indentationString(currentLevel, this.getSapMaterialId()));
+        model.setSapTemplate(StringUtils.indentationString(currentLevel, this.getSapTemplate()));
+        model.setBlue(StringUtils.indentationString(currentLevel, this.getBlue()));
+        model.setBBlock(StringUtils.indentationString(currentLevel, this.getBBlock()));
+        model.setBBType(StringUtils.indentationString(currentLevel, this.getBBType()));
+        model.setSmartPart(StringUtils.indentationString(currentLevel, this.getSmartPart()));
+
+        return model;
     }
 
     @Override

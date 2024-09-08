@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -116,6 +115,7 @@ public class ToolCompareInputService {
     private byte[] dataToExcel(List<CompareInputLineModel> inputsLine) throws IOException {
         final String SHEET_NAME = "Compare Inputs";
         final String SHEET_NAME_ERROR = "Error Inputs";
+        inputsLine = inputsLine.stream().map(CompareInputLineModel::getNewObjectWidthLevel).toList(); // format data
         try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             // Sheet compare inputs
             Sheet sheet = createDefaultSheetColumn(workbook, SHEET_NAME);
@@ -124,19 +124,21 @@ public class ToolCompareInputService {
             for (CompareInputLineModel inputLine : inputsLine) {
                 Row dataRow = sheet.createRow(rowIndex);
                 rowIndex++;
-
-                Cell productCell = ExcelUtils.setText(dataRow, 0,
+                int cellCount = 0;
+                Cell productCell = ExcelUtils.setText(dataRow, cellCount++,
                         inputLine.isHeader() ? inputLine.getProductFullParent() : inputLine.getProduct());
-                Cell serialNoCell = ExcelUtils.setText(dataRow, 1, inputLine.getSerialNo());
-                Cell legacyInputNameCell = ExcelUtils.setText(dataRow, 2, inputLine.getLegacyInputName());
-                Cell legacyInputValueCell = ExcelUtils.setText(dataRow, 3, inputLine.getLegacyInputValue());
-                Cell nxgInputNameCell = ExcelUtils.setText(dataRow, 4, inputLine.getNxgInputName());
-                Cell ngxInputValueCell = ExcelUtils.setText(dataRow, 5, inputLine.getNxgInputValue());
+                Cell legacySerialNoCell = ExcelUtils.setText(dataRow, cellCount++, inputLine.getLegacySerialNo());
+                Cell nxgSerialNoCell = ExcelUtils.setText(dataRow, cellCount++, inputLine.getNxgSerialNo());
+                Cell legacyInputNameCell = ExcelUtils.setText(dataRow, cellCount++, inputLine.getLegacyInputName());
+                Cell legacyInputValueCell = ExcelUtils.setText(dataRow, cellCount++, inputLine.getLegacyInputValue());
+                Cell nxgInputNameCell = ExcelUtils.setText(dataRow, cellCount++, inputLine.getNxgInputName());
+                Cell ngxInputValueCell = ExcelUtils.setText(dataRow, cellCount, inputLine.getNxgInputValue());
 
                 boolean isSameValue = inputLine.isSameInputLegacyNxg();
                 if(!isSameValue){
                     productCell.setCellStyle(cellStyleError);
-                    serialNoCell.setCellStyle(cellStyleError);
+                    legacySerialNoCell.setCellStyle(cellStyleError);
+                    nxgSerialNoCell.setCellStyle(cellStyleError);
                     legacyInputNameCell.setCellStyle(cellStyleError);
                     legacyInputValueCell.setCellStyle(cellStyleError);
                     nxgInputNameCell.setCellStyle(cellStyleError);
@@ -147,18 +149,19 @@ public class ToolCompareInputService {
             Sheet sheetError = createDefaultSheetColumn(workbook, SHEET_NAME_ERROR);
             List<CompareInputLineModel> inputsError = inputsLine.stream().filter(
                     input -> !input.isSameInputLegacyNxg()
-            ).collect(Collectors.toList());
+            ).toList();
             int rowIndexSheetError = 1; // Index 0 is created for header
             for (CompareInputLineModel inputLine : inputsError) {
                 Row dataRow = sheetError.createRow(rowIndexSheetError);
                 rowIndexSheetError++;
-
-                ExcelUtils.setText(dataRow, 0, inputLine.getProductFullParent());
-                ExcelUtils.setText(dataRow, 1, inputLine.getSerialNo());
-                ExcelUtils.setText(dataRow, 2, inputLine.getLegacyInputName());
-                ExcelUtils.setText(dataRow, 3, inputLine.getLegacyInputValue());
-                ExcelUtils.setText(dataRow, 4, inputLine.getNxgInputName());
-                ExcelUtils.setText(dataRow, 5, inputLine.getNxgInputValue());
+                int cellCount = 0;
+                ExcelUtils.setText(dataRow, cellCount++, inputLine.getProductFullParent());
+                ExcelUtils.setText(dataRow, cellCount++, inputLine.getLegacySerialNo());
+                ExcelUtils.setText(dataRow, cellCount++, inputLine.getNxgSerialNo());
+                ExcelUtils.setText(dataRow, cellCount++, inputLine.getLegacyInputName());
+                ExcelUtils.setText(dataRow, cellCount++, inputLine.getLegacyInputValue());
+                ExcelUtils.setText(dataRow, cellCount++, inputLine.getNxgInputName());
+                ExcelUtils.setText(dataRow, cellCount, inputLine.getNxgInputValue());
 
             }
             workbook.write(out);
@@ -168,17 +171,19 @@ public class ToolCompareInputService {
 
     private Sheet createDefaultSheetColumn(Workbook workbook, String sheetName) {
         final String[] HEADERS_TOOL_COMPARE = {
-                "Product", "SerialNo", "Legacy Input Name", "Legacy Input Value",
+                "Product", "Legacy Serial No", "Nxg Serial No", "Legacy Input Name", "Legacy Input Value",
                 "Nxg Input Name", "Nxg Input Value"
         };
 
         Sheet sheet = workbook.createSheet(sheetName);
-        sheet.setColumnWidth(0, 35 * 256);
-        sheet.setColumnWidth(1, 20 * 256);
-        sheet.setColumnWidth(2, 30 * 256);
-        sheet.setColumnWidth(3, 30 * 256);
-        sheet.setColumnWidth(4, 30 * 256);
-        sheet.setColumnWidth(5, 30 * 256);
+        int countColumn = 0;
+        sheet.setColumnWidth(countColumn++, 35 * 256);
+        sheet.setColumnWidth(countColumn++, 20 * 256);
+        sheet.setColumnWidth(countColumn++, 30 * 256);
+        sheet.setColumnWidth(countColumn++, 30 * 256);
+        sheet.setColumnWidth(countColumn++, 30 * 256);
+        sheet.setColumnWidth(countColumn++, 30 * 256);
+        sheet.setColumnWidth(countColumn, 30 * 256);
 
         Row row = sheet.createRow(0);
         CellStyle cellStyleHeader = ExcelUtils.getCellStyleHeader(workbook);
